@@ -2,6 +2,7 @@ package com.example.demo
 
 import groovy.transform.ToString
 import org.springframework.data.annotation.Id
+import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.mongodb.core.mapping.Document
 
 
@@ -13,6 +14,7 @@ class Handbook {
 
     String number
 
+    @Indexed(unique = true)
     String name
 
     String description

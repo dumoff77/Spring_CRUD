@@ -3,11 +3,15 @@ package com.example.demo
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.ResponseBody
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
-@RestController
+@Controller
 class HomeController {
 
     @Autowired
@@ -16,36 +20,52 @@ class HomeController {
     @Autowired
     HandbookRepository handbookRepository
 
-    @GetMapping('/handbook')
-    def handbook(Model model) {
-        handbookRepository.findAll().toString()
-    }
-
     @GetMapping('/home')
     def home(Model model) {
-        userRepository.findAll()
-    }
-
-    @GetMapping('/home776')
-    def home776(Model model) {
-        model.addAttribute('date', userRepository.findByLogin('776').toString())
         'ok'
     }
 
-    @GetMapping('/add')
-    def add() {
-        userRepository.save(new User(
-                login: new Random().nextInt(2999),
-                password: new Random().nextInt(34545)
-        ))
+    //@GetMapping('/home776')
+    //def home776(Model model) {
+    //    model.addAttribute('date', userRepository.findByLogin('776').toString())
+    //    'ok'
+    //}
+    //
+    //@GetMapping('/handbook')
+    //def handbook(Model model) {
+    //    handbookRepository.findAll().toString()
+    //}
+
+    //@GetMapping('/add')
+    //def add() {
+    //    userRepository.save(new User(
+    //            login: new Random().nextInt(2999),
+    //            password: new Random().nextInt(34545)
+    //    ))
+    //}
+
+
+    @DeleteMapping('/delete/{name}')
+    def delete(@PathVariable String name) {
+        try {
+            println name
+            handbookRepository.removeByName(name)
+            return 'ok'
+        } catch (Exception e) {
+            return "ErrorPage"
+        }
     }
 
-    @GetMapping('/insert')
-    def insert() {
-        handbookRepository.save(new Handbook(
-                name: 'Mary',
-                description: 'sss',
-                number: '0980446514'
-        ))
+    @PostMapping("/insert")
+    def insert(@RequestParam String number, String name, String description) {
+        println 'POST'
+        try {
+            handbookRepository.save(new Handbook(
+                    name: name,
+                    description: description,
+                    number: number))
+        } catch (Exception e) {
+            return "ErrorPage"
+        }
     }
 }

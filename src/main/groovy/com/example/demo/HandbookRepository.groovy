@@ -5,6 +5,8 @@ import org.springframework.data.mongodb.repository.Query
 
 interface HandbookRepository extends MongoRepository<Handbook, String>{
 
-    @Query('')
-    User findByNumberAndNameAndDescription(String number, String name, String description)
+    Handbook findByName(String name)
+    Handbook removeByName(String name)
+
+
 }

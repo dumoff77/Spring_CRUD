@@ -1,2 +1,4 @@
-<a href="register.htm"> Register an Employee</a>
-<input type="button" onclick="register.htm" value="REGISTER">
+
+<form action = "" method = "post">
+    <button onclick="/insert?number=12345&name=Vasya&description=friend">POST</button>
+    <form>
