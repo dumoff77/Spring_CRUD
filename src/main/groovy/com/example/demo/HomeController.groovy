@@ -15,8 +15,11 @@ import org.springframework.web.bind.annotation.RestController
 //import groovy.json.JsonSlurper
 
 @Slf4j
-@Controller
+@RestController
 class HomeController {
+
+    @Autowired
+    SqlHandbookRepository SqlHandbookRepository
 
     @Autowired
     UserRepository userRepository
@@ -29,23 +32,9 @@ class HomeController {
         'ok'
     }
 
-    //@GetMapping('/home776')
-    //def home776(Model model) {
-    //    model.addAttribute('date', userRepository.findByLogin('776').toString())
-    //    'ok'
-    //}
-    //
-    //@GetMapping('/add')
-    //def add() {
-    //    userRepository.save(new User(
-    //            login: new Random().nextInt(2999),
-    //            password: new Random().nextInt(34545)
-    //    ))
-    //}
-
     @GetMapping('api/handbook')
-    def handbook(Model model) {
-        handbookRepository.findAll().toString()
+    def handbook() {
+        SqlHandbookRepository.findAll()
     }
 
     @DeleteMapping('api/handbook/{name}')
@@ -60,23 +49,10 @@ class HomeController {
         log.info("Deleted handbook with name $name")
     }
 
-    //@PostMapping("api/handbook")
-    //def insert(@RequestParam String number, String name, String description) {
-    //    try {
-    //        handbookRepository.save(new Handbook(
-    //                name: name,
-    //                description: description,
-    //                number: number))
-    //        return 'ok'
-    //    } catch (Exception e) {
-    //        return "ErrorPage"
-    //    }
-    //}
-
     @PostMapping("api/handbook")
-    def insert(@RequestBody Handbook handbook) {
+    def insert(@RequestBody SqlHandbook handbook) {
         try {
-            handbookRepository.save(handbook)
+            SqlHandbookRepository.save(handbook)
             return 'ok'
         } catch (e) {
             log.error(e.message, e)
