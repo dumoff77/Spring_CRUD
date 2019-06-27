@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+
+import javax.transaction.Transactional
+
 //import groovy.json.JsonSlurper
 
 @Slf4j
@@ -28,7 +31,7 @@ class HomeController {
     HandbookRepository handbookRepository
 
     @GetMapping('/home')
-    def home(Model model) {
+    def home() {
         'ok'
     }
 
@@ -37,16 +40,22 @@ class HomeController {
         SqlHandbookRepository.findAll()
     }
 
+    @GetMapping('api/handbook/{name}')
+    def find_handbook(@PathVariable String name) {
+        SqlHandbookRepository.findByName(name)
+    }
+
+    @Transactional
     @DeleteMapping('api/handbook/{name}')
     def delete(@PathVariable String name) {
         try {
             log.debug("Start delete handbook by name $name")
-            handbookRepository.removeByName(name)
+            SqlHandbookRepository.deleteByName(name)
+            log.info("Deleted handbook with name $name")
             return 'ok'
         } catch (Exception e) {
             log.error(e.message, e)
         }
-        log.info("Deleted handbook with name $name")
     }
 
     @PostMapping("api/handbook")
@@ -61,13 +70,12 @@ class HomeController {
         return 'ok'
     }
 
+    @Transactional
     @PutMapping("api/handbook/{name}")
     def update(@PathVariable String name, @RequestBody Handbook handbook) {
         log.debug("Start update handbook by name $name")
         try {
-            def doc = handbookRepository.findByName(name)
-            handbook.id = doc.id
-            handbookRepository.save(handbook)
+            SqlHandbookRepository.setHandbook(handbook.name, handbook.number, handbook.description, name)
             return 'ok'
         } catch (e) {
             log.error(e.message, e)
